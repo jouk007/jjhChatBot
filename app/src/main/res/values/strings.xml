@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">jjhChatBot</string>
+    <string name="action_log">Log</string>
+    <string name="lorem_3">Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod
+    tincidunt ut laoreet dolore magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci
+    tation ullamcorper suscipit lobortis nisl ut aliquip ex ea commodo consequat. Duis autem vel eum iriure dolor in
+    hendrerit in vulputate velit esse molestie consequat, vel illum dolore eu feugiat nulla facilisis at vero eros
+    et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait
+    nulla facilisi.</string>
+
+    <string name="change_city">Change City</string>
+    <string name="change_units">Change Units</string>
+    <string name="title_activity_weather__cities_">Weather_Cities_Activity</string>
+    <string name="title_activity_weather__service">Weather_Service</string>
+    <string name="explain_application">jjh 챗봇(가칭)은 인공지능에 관련된 다양한 응용개발 가능성을 내포한 어플로서 간단한 명령들을 수행할 수 있습니다. 챗봇에게 음성을 부여함으로서 혼자 말하는 느낌보다 서로간에 대화가 진행되고 있다는 느낌을 주었으며, 또한 챗봇은 간단한 대화 상호작용을 통해 논리적으로 유추하고 추론하여 대답을 합니다.
+        챗봇의 다음 기능들을 통해 앞으로의 인공지능 관련 응용의 가능성을 보실 수 있습니다.
+    </string>
+    <string name="explain_jjh">챗봇 어플은 저의 첫작이면서도 애착이 가는 앱입니다. 지금도 개발 중이라서 기능이 부족하지만, 향후 여러가지 기능을 덧불여서 사용자분들의 편리를 추구하고 긍정적인 평가를 받을 수 있는 개발을 하도록 노력하겠습니다. 감사합니다.</string>
+</resources>
