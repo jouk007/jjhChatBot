@@ -10,7 +10,7 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 
-public class myWordListActivity extends AppCompatActivity {
+public class WordListActivity extends AppCompatActivity {
     String myWord[]={"안녕","~ 검색","~ 전화 입력해","배고파","오늘 날씨 어때","~ 날씨 알려줘","여긴 어디야","~ 근처 찾아봐","~까지 가는길 알려줘","잘지내니"
             ,"배터리 잔량","비가 오고 있어"
     };
@@ -22,10 +22,10 @@ public class myWordListActivity extends AppCompatActivity {
         setContentView(R.layout.activity_my_word_list);
 
         ListView listview ;
-        myWordListAdapter adapter;
+        WordListAdapter adapter;
 
         // Adapter 생성
-        adapter = new myWordListAdapter() ;
+        adapter = new WordListAdapter() ;
 
         // 리스트뷰 참조 및 Adapter달기
         listview = (ListView) findViewById(R.id.word_list);
@@ -34,7 +34,7 @@ public class myWordListActivity extends AppCompatActivity {
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.images_speaking),
                 "안녕", "간단한 상호 작용");
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.images_speaking),
-                "잘지내니", "인사 관련 대화");
+                "잘 지내니", "인사 관련 대화");
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.images_speaking),
                 "배고파", "식사에 관련된 상호 작용");
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.images_speaking),
@@ -59,7 +59,7 @@ public class myWordListActivity extends AppCompatActivity {
         listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(myWordListActivity.this,myWordListView.class);
+                Intent intent = new Intent(WordListActivity.this,WordListView.class);
                 intent.putExtra("myWordListActivity",id);
                 startActivity(intent);
             }

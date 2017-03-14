@@ -1,4 +1,4 @@
-package com.police170m3.rpi.jjhchatbot.jjhTmapView;
+package com.police170m3.rpi.jjhchatbot;
 
 import android.content.Context;
 import android.graphics.drawable.Drawable;
@@ -9,20 +9,18 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.police170m3.rpi.jjhchatbot.R;
-
 import java.util.ArrayList;
 
 /**
  * Created by Jaehun on 2017-03-09.
  */
 
-public class Tmap_Poi_List_Adapter extends BaseAdapter{
+public class WordListAdapter extends BaseAdapter {
     // Adapter에 추가된 데이터를 저장하기 위한 ArrayList
-    private ArrayList<Tmap_Poi_List_Item> listViewItemList = new ArrayList<Tmap_Poi_List_Item>() ;
+    private ArrayList<WordListItem> listViewItemList = new ArrayList<WordListItem>() ;
 
     // ListViewAdapter의 생성자
-    public Tmap_Poi_List_Adapter() {
+    public WordListAdapter() {
 
     }
 
@@ -41,7 +39,7 @@ public class Tmap_Poi_List_Adapter extends BaseAdapter{
         // "listview_item" Layout을 inflate하여 convertView 참조 획득.
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            convertView = inflater.inflate(R.layout.poi_list_item, parent, false);
+            convertView = inflater.inflate(R.layout.word_list_item, parent, false);
         }
 
         // 화면에 표시될 View(Layout이 inflate된)으로부터 위젯에 대한 참조 획득
@@ -50,7 +48,7 @@ public class Tmap_Poi_List_Adapter extends BaseAdapter{
         TextView descTextView = (TextView) convertView.findViewById(R.id.textView_Sub) ;
 
         // Data Set(listViewItemList)에서 position에 위치한 데이터 참조 획득
-        Tmap_Poi_List_Item listViewItem = listViewItemList.get(position);
+        WordListItem listViewItem = listViewItemList.get(position);
 
         // 아이템 내 각 위젯에 데이터 반영
         iconImageView.setImageDrawable(listViewItem.getIcon());
@@ -74,7 +72,7 @@ public class Tmap_Poi_List_Adapter extends BaseAdapter{
 
     // 아이템 데이터 추가를 위한 함수. 개발자가 원하는대로 작성 가능.
     public void addItem(Drawable icon, String title, String desc) {
-        Tmap_Poi_List_Item item = new Tmap_Poi_List_Item();
+        WordListItem item = new WordListItem();
 
         item.setIcon(icon);
         item.setTitle(title);

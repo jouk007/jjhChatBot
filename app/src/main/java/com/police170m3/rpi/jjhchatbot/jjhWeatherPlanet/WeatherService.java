@@ -25,7 +25,7 @@ import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.model.Weather;
  */
 
 @SuppressWarnings("MissingPermission")
-public class Weather_Service extends Service{
+public class WeatherService extends Service{
 
     private LocationManager locationManager;
     private LocationListener myLocation;
@@ -109,7 +109,7 @@ public class Weather_Service extends Service{
             super.onPostExecute(weather);
 
             float humidity = weather.currentCondition.getHumidity();
-            Intent brainIntent = new Intent(Weather_Service.this, BrainService.class);
+            Intent brainIntent = new Intent(WeatherService.this, BrainService.class);
             brainIntent.setAction(BrainService.ACTION_WEATHER_QUESTION);
             brainIntent.putExtra(EXTRA_WEATHER_QUESTION, humidity);
             startService(brainIntent);
@@ -124,8 +124,8 @@ public class Weather_Service extends Service{
     }
 
     class MyBinder extends Binder {
-        Weather_Service getService() { // 서비스 객체를 리턴
-            return Weather_Service.this;
+        WeatherService getService() { // 서비스 객체를 리턴
+            return WeatherService.this;
         }
     }
 

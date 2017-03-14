@@ -8,7 +8,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     android:background="#3fbcfe"
-    tools:context="com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.Weather_Cities_Activity"
+    tools:context="com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.WeatherCitiesActivity"
     android:id="@+id/activity_main">
     <TextView
         android:layout_width="wrap_content"

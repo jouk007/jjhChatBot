@@ -35,7 +35,6 @@ import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.Util.Utils;
 import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.data.CityPreference;
 import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.data.JSONWeatherParser;
 import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.data.WeatherHttpClient;
-import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.model.CurrentCondition;
 import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.model.Weather;
 
 import java.io.BufferedInputStream;
@@ -77,8 +76,6 @@ public class WeatherActivity extends AppCompatActivity {
     Weather weather = new Weather();
     Weather weather1 = new Weather();
 
-    private CurrentCondition currentCondition;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -96,14 +93,6 @@ public class WeatherActivity extends AppCompatActivity {
         updated = (TextView) findViewById(R.id.updateText);
         tv = (TextView) findViewById(R.id.textView2);
         myLayout = (RelativeLayout) findViewById(R.id.activity_main);
-
-        CityPreference cityPreference = new CityPreference(WeatherActivity.this);
-
-        /*
-        String getMyCity = getIntent().getStringExtra(EXTRA_QUESTION);
-        Log.e("WeatherActivity", "getMyCity: " + getMyCity);
-        renderWeatherData(getMyCity);
-        */
 
         // API 23 버전이상에서 새로 업데이트 된 권한 요구 함수
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -188,43 +177,6 @@ public class WeatherActivity extends AppCompatActivity {
                 myLocation);
         locationManager.requestLocationUpdates("gps", 5000, 0, myLocation);
     }
-
-    //APT 23버전 이상부터 권한 요구사항이 바뀌었으므로 개발시 참고
-    /*@Override
-    protected void onPause() {
-        super.onPause();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{
-                    Manifest.permission.INTERNET,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_NETWORK_STATE,
-                    Manifest.permission.SYSTEM_ALERT_WINDOW,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-
-            }, MY_PERMISSION);
-        }
-        locationManager.removeUpdates(mLocationListener);
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(MainActivity.this, new String[]{
-                    Manifest.permission.INTERNET,
-                    Manifest.permission.ACCESS_COARSE_LOCATION,
-                    Manifest.permission.ACCESS_FINE_LOCATION,
-                    Manifest.permission.ACCESS_NETWORK_STATE,
-                    Manifest.permission.SYSTEM_ALERT_WINDOW,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE
-
-            }, MY_PERMISSION);
-        }
-        lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 400, 1, mLocationListener);
-        lm.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 400, 1, mLocationListener);
-    }*/
-
 
     //--- DownloadImage START ---//
     // code found at -- https://stackoverflow.com/questions/8423987/download-image-for-imageview-on-android

@@ -69,7 +69,6 @@ public class ContactsList extends Activity{
                 String equalName = acontact.getName();
                 if (setMyname.equals(equalName)){
                     Log.d("getContactList()","myNum: "+acontact.getPhonenum()+"myName: "+acontact.getName());
-                    //이름을 적은 내용을 이제 휴대폰 번호로 옮기고, 그걸 전화걸기나 문자 보내기 등에 사용하기
                 }
 
             } while (contactCursor.moveToNext());

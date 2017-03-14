@@ -3,16 +3,12 @@ package com.police170m3.rpi.jjhchatbot;
 import android.app.Service;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.LocationManager;
 import android.os.BatteryManager;
 import android.os.Binder;
 import android.os.Handler;
 import android.os.IBinder;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
-
-import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.Weather_Service;
-import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.model.Weather;
 
 import java.util.ArrayList;
 
@@ -30,15 +26,7 @@ public class BrainService extends Service {
     public static final String EXTRA_QUESTION = "com.police170m3.rpi.jjhchatbot.BrainService.EXTRA_QUESTION";
     public static final String EXTRA_TMAP_QUESTION = "com.police170m3.rpi.jjhchatbot.BrainService.EXTRA_TMAP_QUESTION";
     public static final String EXTRA_WEATHER_QUESTION = "com.police170m3.rpi.jjhchatbot.BrainService.EXTRA_WEATHER_QUESTION";
-
-    LocationManager locationManager;
-
-    Weather weather = new Weather();
-
-    Weather_Service weather_service;
-
-    float HumiditySet = 0f;
-
+    public static final String EXTRA_MYWORDQUESTIONS_QUESTION = "com.police170m3.rpi.jjhchatbot.BrainService.EXTRA_MYWORDQUESTIONS_QUESTION";
 
     public static String[][] chatBotList={
             //인사 관련
@@ -57,11 +45,12 @@ public class BrainService extends Service {
 
     ArrayList<String> arrayList = new ArrayList<>();
 
-    int j =0;
-    int j1 =1;
-    int h =2;
-    int d =5;
-    int f =6;
+    //chatBotList의 내용들을 랜덤으로 출력시키기위한 배열 자리의 변수
+    int listhello =0;//인사 관련
+    int listhello1 =1;//인사1 관련
+    int listsearch =2;//검색 관련
+    int listdefault =5;//디폴트 관련
+    int listfindway =6;//길찾기 관련
 
     private Handler mHandler;
     private Runnable mRunnable;
@@ -94,17 +83,16 @@ public class BrainService extends Service {
         String action = intent.getAction();
 
         if(action.equalsIgnoreCase(ACTION_QUESTION)){
-            int r=(int)(Math.random()*chatBotList[j].length);
-            int r1=(int)(Math.random()*chatBotList[h].length);
-            int dr=(int)(Math.random()*chatBotList[d].length);
-            int fr=(int)(Math.random()*chatBotList[f].length);
-            //String tmapAnswer = intent.getStringExtra("Tmap_Poi_Activity");
+            int hrand=(int)(Math.random()*chatBotList[listhello].length);       //인사 관련 리스트
+            int h1rand=(int)(Math.random()*chatBotList[listsearch].length);     //인사1 관련 리스트
+            int drand=(int)(Math.random()*chatBotList[listdefault].length);     //디폴트 관련 리스트
+            int fwrand=(int)(Math.random()*chatBotList[listfindway].length);    //길찾기 관련 리스트
             String question = intent.getStringExtra(EXTRA_QUESTION);
             if(question!=null){
                 Log.d("BrainService","onStartCommand() question:"+question);
                 String answer = "";
                 if (question.contains("안녕")){
-                    answer = chatBotList[j][r];
+                    answer = chatBotList[listhello][hrand];
                     mRunnable = new Runnable() {
                         String answerSub = "";
                         @Override
@@ -122,13 +110,13 @@ public class BrainService extends Service {
                     };
                     mHandler = new Handler();
                     mHandler.postDelayed(mRunnable, 2000);
-                    Log.d("BrainService","onStartCommand() question:"+chatBotList[j][r]);
+                    Log.d("BrainService","onStartCommand() question:"+chatBotList[listhello][hrand]);
                 }else if (question.contains("잘 지내니")){
-                    answer = chatBotList[j1][r];
+                    answer = chatBotList[listhello1][hrand];
                 }
                 else if(question.contains("검색")){
-                    answer = chatBotList[h][r1];
-                    Log.d("BrainService","onStartCommand() question:"+chatBotList[h][r1]);
+                    answer = chatBotList[listsearch][h1rand];
+                    Log.d("BrainService","onStartCommand() question:"+chatBotList[listsearch][h1rand]);
                 } else if(question.contains("배고파")){
                     answer = "배 고프시다면 식당으로 가실래요?";
                     arrayList.add(answer);
@@ -137,9 +125,9 @@ public class BrainService extends Service {
                     //이미지 가져오기
                     answer = "오늘 날씨가 좋으면 이거랑 비슷하겠네요?";
                 }else if(question.contains("오늘 날씨 어때")){
-                    answer = chatBotList[h][r1];
+                    answer = chatBotList[listsearch][h1rand];
                 }else if(question.contains("날씨 알려줘")){
-                    answer = chatBotList[h][r1];
+                    answer = chatBotList[listsearch][h1rand];
                 }else if(question.contains("아니")){
                     //아니라고 했을때 여러가지 상황을 입력한다
                     //식사 상황에 관련된것 입력
@@ -191,7 +179,7 @@ public class BrainService extends Service {
                             }
                         };
                         mHandler = new Handler();
-                        mHandler.postDelayed(mRunnable, 2000);
+                        mHandler.postDelayed(mRunnable, 3800);
                         arrayList.clear();
                     }
                 }else if (question.contains("고마워")){
@@ -234,19 +222,19 @@ public class BrainService extends Service {
                         answer = "제가 한 일이 뭔지는 모르겠지만 고마워요";
                     }
                 }else if (question.contains("여긴 어디야")){
-                    answer = chatBotList[h][r1];
+                    answer = chatBotList[listsearch][h1rand];
                 }else if (question.contains("근처 찾아봐")){
-                    answer = chatBotList[f][fr];
+                    answer = chatBotList[listfindway][fwrand];
                     arrayList.add(answer);
                 }else if (question.contains("까지 가는길 알려줘")){
-                    answer = chatBotList[f][fr];
+                    answer = chatBotList[listfindway][fwrand];
                     arrayList.add(answer);
                 }else if (question.contains("전화 입력해")){
                     answer = "전화 번호 입력합니다";
                 }
                 // 해당 명령에 없는 말을 할때
                 else{
-                    answer = chatBotList[d][dr];
+                    answer = chatBotList[listdefault][drand];
                 }
                 //배터리 관련 내용
                 if (question.contains("배터리 잔량")){

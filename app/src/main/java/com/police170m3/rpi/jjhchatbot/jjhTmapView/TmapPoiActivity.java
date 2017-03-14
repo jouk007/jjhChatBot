@@ -33,7 +33,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
-public class Tmap_Poi_Activity extends AppCompatActivity implements TMapGpsManager.onLocationChangedCallback{
+public class TmapPoiActivity extends AppCompatActivity implements TMapGpsManager.onLocationChangedCallback{
     private TMapView tMapView;
 
     public final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
@@ -118,32 +118,6 @@ public class Tmap_Poi_Activity extends AppCompatActivity implements TMapGpsManag
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-        /*
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                Log.d("test", "onLocationChanged, location:" + location);
-                lat = location.getLatitude();
-                lon = location.getLongitude();
-
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        };
-        */
     }
 
     @Override
@@ -230,7 +204,7 @@ public class Tmap_Poi_Activity extends AppCompatActivity implements TMapGpsManag
                         //나중에 잘못된 정보를 입력할때 적을 수 있는 리스트를 보여주고 여기서 입력하거나 클릭시 이동
                         //또는 글자를 바꿈으로서 내용이 이해되게 하도록한다.
 
-                        Intent mainIntent = new Intent(Tmap_Poi_Activity.this, Tmap_Poi_List.class);
+                        Intent mainIntent = new Intent(TmapPoiActivity.this, TmapPoiList.class);
                         mainIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                         startActivity(mainIntent);
                         finish();

@@ -6,7 +6,7 @@ import android.graphics.drawable.Drawable;
  * Created by Jaehun on 2017-03-09.
  */
 
-public class Tmap_Poi_List_Item {
+public class TmapPoiListItem {
     private Drawable iconDrawable ;
     private String titleStr ;
     private String descStr ;

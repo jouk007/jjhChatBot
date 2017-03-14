@@ -10,7 +10,7 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.Weather_Cities_Activity"
+    tools:context="com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.WeatherCitiesActivity"
     tools:showIn="@layout/activity_weather__cities_">
 
 </RelativeLayout>

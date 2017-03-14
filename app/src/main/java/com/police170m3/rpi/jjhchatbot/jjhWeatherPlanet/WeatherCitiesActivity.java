@@ -19,7 +19,6 @@ import android.text.InputType;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
@@ -41,7 +40,7 @@ import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
-public class Weather_Cities_Activity extends AppCompatActivity {
+public class WeatherCitiesActivity extends AppCompatActivity {
     public static final String CLEAR_SKY = "clear sky";
 
     private TextView cityName;
@@ -55,7 +54,6 @@ public class Weather_Cities_Activity extends AppCompatActivity {
     private TextView sunset;
     private TextView updated;
     private TextView tv;
-    private Button tb;
     private RelativeLayout myLayout;
 
     private LocationManager locationManager;
@@ -92,18 +90,15 @@ public class Weather_Cities_Activity extends AppCompatActivity {
         tv = (TextView) findViewById(R.id.textView2);
         myLayout = (RelativeLayout) findViewById(R.id.activity_main);
 
-        CityPreference cityPreference = new CityPreference(Weather_Cities_Activity.this);
-
         String getMyCity = getIntent().getStringExtra(EXTRA_QUESTION);
         Log.e("WeatherActivity", "getMyCity: " + getMyCity);
         renderWeatherData(getMyCity);
-
     }
     //--- OnCreate End ---//
 
     public void renderWeatherData(String city) {
-        Weather_Cities_Activity.WeatherTask weatherTask = new Weather_Cities_Activity.WeatherTask();
-        weatherTask.execute(city + "&units=metric");
+        WeatherCitiesActivity.WeatherTask weatherTask = new WeatherCitiesActivity.WeatherTask();
+        weatherTask.execute(city +"&units=metric");
     }
 
     //--- DownloadImage START ---//
@@ -182,95 +177,6 @@ public class Weather_Cities_Activity extends AppCompatActivity {
     }
     //--- DownloadImage End ---//
 
-    //--- WeatherTask Start ---//
-    private class WeatherTask1 extends AsyncTask<String, Void, Weather> {
-
-        @Override
-        protected Weather doInBackground(String... strings) {
-            String data = ((new WeatherHttpClient()).getWeatherData1(strings[0]));
-
-            // Catch error if a city is entered with a space e.g. "Fort Carson" or "Denver, US" to avoid fatal error
-            // The space should already be removed at showInputDialog but this error causes the app to need to be reinstalled to work again so double protection
-            try {
-                weather = JSONWeatherParser.getWeather(data);
-            } catch (Exception NullWeatherData) {
-                Log.e("Error Parsing: ", "City has space in text");
-            }
-            if (weather == null) {
-                showChangeCityDialog();
-            }
-            if (weather1 == null) {
-                showChangeCityDialog();
-            }
-            return weather;
-        }
-
-        @TargetApi(Build.VERSION_CODES.N)
-        @Override
-        protected void onPostExecute(Weather weather) {
-            super.onPostExecute(weather);
-
-
-            //Convert times into readable formats
-            //get unix times and multiply by 1000 to get proper length since it converts down to milliseconds
-            long unixSunrise = weather.place.getSunrise() * 1000;
-            long unixSunset = weather.place.getSunset() * 1000;
-            long unixUpdated = weather.place.getLastupdate() * 1000;
-            //do the conversion
-            java.util.Date sunriseDate = new java.util.Date(unixSunrise);
-            java.util.Date sunsetDate = new java.util.Date(unixSunset);
-            java.util.Date updatedDate = new java.util.Date(unixUpdated);
-            //Strip away everything but the time in 24hr time (use hh in place of kk or 12hour clock)
-            //need to change sunset and rise times to time zone for where the location is not my local timezone
-            String sunriseTime = String.valueOf(android.text.format.DateFormat.format("kk:mm:ss zzz", sunriseDate));
-            String sunsetTime = String.valueOf(android.text.format.DateFormat.format("kk:mm:ss zzz", sunsetDate));
-            String updatedTime = String.valueOf(android.text.format.DateFormat.format("kk:mm:ss zzz", updatedDate));
-
-            // Set Text for all items
-            cityName.setText(weather.place.getCity() + ", " + weather.place.getCountry());
-            temp.setText(weather.temperature.getTemp() + " °C");
-            //temp.setText((int) (((weather.temperature.getTemp() * 9) / 5) + 32)+" °C");
-            wind.setText("" + weather.wind.getSpeed() + " m/s");
-            description.setText("" + weather.currentCondition.getDescription());
-            humidity.setText("" + weather.currentCondition.getHumidity() + "%");
-            pressure.setText("" + weather.currentCondition.getPressure() + " hPa");
-            sunrise.setText("Sunrise: " + sunriseTime);
-            sunset.setText("Sunset: " + sunsetTime);
-            updated.setText("Last Updated: " + updatedTime);
-
-
-            Log.d("onPostExecute", "Cloudiness: " + weather.currentCondition.getDescription());
-
-            // Set iconView using the url code given in the XML file
-            new Weather_Cities_Activity.DownloadImage().execute(Utils.ICON_URL + weather.currentCondition.getIcon() + ".png");
-
-            //날씨 상태에 따라 배경이미지 변경
-            if (weather.currentCondition.getIcon().equals("01d")) {
-                myLayout.setBackgroundResource(R.drawable.dayclearsky);
-                description.setText("맑음");
-            } else if (weather.currentCondition.getIcon().equals("02d")) {
-                // myLayout.setBackgroundResource(R.drawable.dayfewcloud);
-                description.setText("구름 조금");
-            } else if (weather.currentCondition.getIcon().equals("01n")) {
-                myLayout.setBackgroundResource(R.drawable.spaceclearsky);
-                description.setText("맑음");
-            } else if (weather.currentCondition.getIcon().equals("02n")) {
-                myLayout.setBackgroundResource(R.drawable.nightfewcloud);
-                description.setText("구름 조금");
-            } else if (weather.currentCondition.getIcon().equals("03n")) {
-                myLayout.setBackgroundResource(R.drawable.nightcloud);
-                description.setText("구름 중간");
-            }else if (weather.currentCondition.getIcon().equals("03n")) {
-                myLayout.setBackgroundResource(R.drawable.nighthaze);
-                description.setText("얇은 안개");
-            }else if (weather.currentCondition.getIcon().equals("10n")) {
-                myLayout.setBackgroundResource(R.drawable.nightrain);
-                description.setText("비 약간");
-            }
-        }
-    }
-    //--- WeatherTask End ---//
-
     private class WeatherTask extends AsyncTask<String, Void, Weather> {
 
         @Override
@@ -335,7 +241,7 @@ public class Weather_Cities_Activity extends AppCompatActivity {
             }
 
             // Set iconView using the url code given in the XML file
-            new Weather_Cities_Activity.DownloadImage().execute(Utils.ICON_URL + weather.currentCondition.getIcon() + ".png");
+            new WeatherCitiesActivity.DownloadImage().execute(Utils.ICON_URL + weather.currentCondition.getIcon() + ".png");
             Log.d("onPostExecute", "getIcon: " + weather.currentCondition.getIcon());
 
             //날씨 상태에 따라 배경이미지 변경
@@ -366,17 +272,17 @@ public class Weather_Cities_Activity extends AppCompatActivity {
 
     //--- Change city Dialog Start ---//
     private void showChangeCityDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(Weather_Cities_Activity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(WeatherCitiesActivity.this);
         builder.setTitle("Change City");
 
-        final EditText cityInput = new EditText(Weather_Cities_Activity.this);
+        final EditText cityInput = new EditText(WeatherCitiesActivity.this);
         cityInput.setInputType(InputType.TYPE_CLASS_TEXT);
         cityInput.setHint("Enter city (Seattle) or zip code (80501)");
         builder.setView(cityInput);
         builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                CityPreference cityPreference = new CityPreference(Weather_Cities_Activity.this);
+                CityPreference cityPreference = new CityPreference(WeatherCitiesActivity.this);
                 cityPreference.setCity(cityInput.getText().toString());
 
                 // Remove Spaces in city string to avoid fatal error
@@ -393,7 +299,7 @@ public class Weather_Cities_Activity extends AppCompatActivity {
 
     //--- Change city Dialog Start ---//
     private void showChangeUnitsDialog() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(Weather_Cities_Activity.this);
+        AlertDialog.Builder builder = new AlertDialog.Builder(WeatherCitiesActivity.this);
         builder.setTitle("Change Units");
     }
     //--- Change city Dialog END ---//

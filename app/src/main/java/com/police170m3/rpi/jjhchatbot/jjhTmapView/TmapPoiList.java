@@ -14,7 +14,7 @@ import com.police170m3.rpi.jjhchatbot.R;
 
 import java.util.Locale;
 
-public class Tmap_Poi_List extends AppCompatActivity {
+public class TmapPoiList extends AppCompatActivity {
 
     TextToSpeech mTTS;
 
@@ -34,10 +34,10 @@ public class Tmap_Poi_List extends AppCompatActivity {
             }
         });
         ListView listview ;
-        Tmap_Poi_List_Adapter adapter;
+        TmapPoiListAdapter adapter;
 
         // Adapter 생성
-        adapter = new Tmap_Poi_List_Adapter() ;
+        adapter = new TmapPoiListAdapter() ;
 
         // 리스트뷰 참조 및 Adapter달기
         listview = (ListView) findViewById(R.id.word_list);
@@ -134,15 +134,15 @@ public class Tmap_Poi_List extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView parent, View v, int position, long id) {
                 // get item
-                Tmap_Poi_List_Item item = (Tmap_Poi_List_Item) parent.getItemAtPosition(position) ;
+                TmapPoiListItem item = (TmapPoiListItem) parent.getItemAtPosition(position) ;
 
                 String titleStr = item.getTitle();
                 String answer = "다음엔 "+titleStr+"근처 찾아봐로 말하시면됩니다 검색을 시작합니다";
                 Log.d("Tmap_Poi_List","onItemClick:"+titleStr);
                 mTTS.speak(answer, TextToSpeech.QUEUE_FLUSH, null);
 
-                Intent brainIntent1 = new Intent(Tmap_Poi_List.this, Tmap_Poi_Activity.class);
-                brainIntent1.putExtra(Tmap_Poi_Activity.EXTRA_QUESTION, titleStr);
+                Intent brainIntent1 = new Intent(TmapPoiList.this, TmapPoiActivity.class);
+                brainIntent1.putExtra(TmapPoiActivity.EXTRA_QUESTION, titleStr);
                 startActivity(brainIntent1);
                 finish();
                 // TODO : use item data.

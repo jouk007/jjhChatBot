@@ -19,35 +19,38 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".MainActivity">
+        <activity
+            android:name=".IntroActivity"
+            android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".MainActivity" />
 
         <service
             android:name=".BrainService"
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name" />
         <service
-            android:name=".jjhWeatherPlanet.Weather_Service"
+            android:name=".jjhWeatherPlanet.WeatherService"
             android:icon="@drawable/ic_launcher"
             android:label="@string/app_name" />
 
         <activity android:name=".jjhWeatherPlanet.WeatherActivity" />
         <activity android:name=".jjhTmapView.TmapViewActivity" />
         <activity
-            android:name=".jjhWeatherPlanet.Weather_Cities_Activity"
+            android:name=".jjhWeatherPlanet.WeatherCitiesActivity"
             android:label="@string/title_activity_weather__cities_"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name=".jjhTmapView.Tmap_Poi_Activity" />
-        <activity android:name=".jjhTmapView.Tmap_Drawpass_Activity" />
-        <activity android:name=".myWordListActivity" />
-        <activity android:name=".jjhTmapView.Tmap_Poi_List" />
-        <activity android:name=".myWordListView" />
-        <activity android:name=".chatbot_explain_activity"></activity>
+        <activity android:name=".jjhTmapView.TmapPoiActivity" />
+        <activity android:name=".jjhTmapView.TmapDrawpassActivity" />
+        <activity android:name=".WordListActivity" />
+        <activity android:name=".jjhTmapView.TmapPoiList" />
+        <activity android:name=".WordListView" />
+        <activity android:name=".ChabotExplainActivity" />
     </application>
 
 </manifest>

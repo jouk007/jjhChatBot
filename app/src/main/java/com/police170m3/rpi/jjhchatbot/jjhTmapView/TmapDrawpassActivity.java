@@ -32,7 +32,7 @@ import java.util.Locale;
  * Created by Jaehun on 2017-03-05.
  */
 
-public class Tmap_Drawpass_Activity extends AppCompatActivity implements TMapGpsManager.onLocationChangedCallback{
+public class TmapDrawpassActivity extends AppCompatActivity implements TMapGpsManager.onLocationChangedCallback{
     private TMapView tMapView;
 
     private Context mContext;
@@ -138,52 +138,6 @@ public class Tmap_Drawpass_Activity extends AppCompatActivity implements TMapGps
         getAddressInfo(lat, lon);
         //프로그래스다이얼로그 추가시켜서 로딩 표시하기
     }
-
-    /**
-     * setTrafficeInfo
-     * 실시간 교통정보를 표출여부를 설정한다.
-     */
-    public void setTrafficeInfo() {
-        m_bTrafficeMode = !m_bTrafficeMode;
-        tMapView.setTrafficInfo(m_bTrafficeMode);
-    }
-
-    /**
-     * drawMapPath
-     * 지도에 시작-종료 점에 대해서 경로를 표시한다.
-     */
-    /*
-    public void drawMapPath() {
-        TMapPoint point1 = tMapView.getCenterPoint();
-        TMapPoint point2 = randomTMapPoint();
-
-        TMapData tmapdata = new TMapData();
-
-        tmapdata.findPathData(point1, point2, new TMapData.FindPathDataListenerCallback() {
-
-            @Override
-            public void onFindPathData(TMapPolyLine polyLine) {
-                tMapView.addTMapPath(polyLine);
-            }
-        });
-    }*/
-
-    /*public void drawPedestrianPath() {
-        final TMapPoint point1 = tMapView.getCenterPoint();
-        TMapPoint point2 = randomTMapPoint();
-
-        TMapData tmapdata = new TMapData();
-
-        tmapdata.findPathDataWithType(TMapData.TMapPathType.PEDESTRIAN_PATH, point1, point2, new TMapData.FindPathDataListenerCallback() {
-            @Override
-            public void onFindPathData(TMapPolyLine polyLine) {
-                tMapView.setLocationPoint(point1.getLongitude(),point1.getLatitude());
-                point2 = polyLine.getDistance();
-                polyLine.setLineColor(Color.BLUE);
-                tMapView.addTMapPath(polyLine);
-            }
-        });
-    }*/
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
