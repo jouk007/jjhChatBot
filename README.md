@@ -6,16 +6,19 @@ Project jjh챗봇은 발전하는 인공지능 트렌드에 가장 기초적인 
 
 ![ezgif com-gif-maker](https://cloud.githubusercontent.com/assets/19420356/23824213/914e644e-06b5-11e7-8221-e4ffc2b5d25c.gif)
 
-
-![back_logo](https://cloud.githubusercontent.com/assets/19420356/23975666/8c951a6a-0a25-11e7-82fb-45d09bd9c287.png)
-
 기능 예시
 
+
 날씨 파싱
+
 ![weatherset](https://cloud.githubusercontent.com/assets/19420356/23975650/6e3cd72e-0a25-11e7-9aa4-bf957eb0f2fb.jpg)
 
+
 다양한 지도 기능
+
 ![find_way](https://cloud.githubusercontent.com/assets/19420356/23975640/5db3b472-0a25-11e7-9e27-35118e6ca93d.jpg)
 
+
 그외 여러가지 포함된 기본 기능 및 상호 작용 대화
+
 ![chatbot_explain_questions](https://cloud.githubusercontent.com/assets/19420356/23975657/79833f2e-0a25-11e7-89f4-21056f4e8ab9.jpg)
