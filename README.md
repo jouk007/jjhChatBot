@@ -9,16 +9,12 @@ PPT링크 : https://www.slideshare.net/jungjaehun2/dzinny-ping/jungjaehun2/dzinn
 개발역할
 프로그램
 
+
 개발환경
-
 Apache 2.4.7
-
 php 5.5.9
-
 mysql 5.5.49
-
 xmapp
-
 android studio
 
 
