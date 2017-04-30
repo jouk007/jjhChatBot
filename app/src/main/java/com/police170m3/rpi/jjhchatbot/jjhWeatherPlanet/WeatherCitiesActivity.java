@@ -6,10 +6,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Geocoder;
-import android.location.LocationListener;
-import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
@@ -34,36 +30,27 @@ import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.model.Weather;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.List;
-import java.util.Locale;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class WeatherCitiesActivity extends AppCompatActivity {
     public static final String CLEAR_SKY = "clear sky";
 
-    private TextView cityName;
-    private TextView temp;
-    private ImageView iconView;
-    private TextView description;
-    private TextView humidity;
-    private TextView pressure;
-    private TextView wind;
-    private TextView sunrise;
-    private TextView sunset;
-    private TextView updated;
-    private TextView tv;
-    private RelativeLayout myLayout;
-
-    private LocationManager locationManager;
-    private LocationListener locationListener;
-    private LocationListener myLocation;
-
-    int MY_PERMISSION = 0;
-
-    double lat = 0;
-    double lon = 0;
+    @BindView(R.id.cityText)TextView cityName;
+    @BindView(R.id.weatherIcon)ImageView iconView;
+    @BindView(R.id.tempText)TextView temp;
+    @BindView(R.id.cloudText)TextView description;
+    @BindView(R.id.humidityText)TextView humidity;
+    @BindView(R.id.pressureText)TextView pressure;
+    @BindView(R.id.windText)TextView wind;
+    @BindView(R.id.sunriseText)TextView sunrise;
+    @BindView(R.id.sunsetText)TextView sunset;
+    @BindView(R.id.updateText)TextView updated;
+    @BindView(R.id.textView2)TextView tv;
+    @BindView(R.id.activity_main)RelativeLayout myLayout;
 
     public static final String EXTRA_QUESTION = "com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.WeatherActivity.EXTRA_QUESTION";
 
@@ -77,18 +64,7 @@ public class WeatherCitiesActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        cityName = (TextView) findViewById(R.id.cityText);
-        iconView = (ImageView) findViewById(R.id.weatherIcon);
-        temp = (TextView) findViewById(R.id.tempText);
-        description = (TextView) findViewById(R.id.cloudText);
-        humidity = (TextView) findViewById(R.id.humidityText);
-        pressure = (TextView) findViewById(R.id.pressureText);
-        wind = (TextView) findViewById(R.id.windText);
-        sunrise = (TextView) findViewById(R.id.sunriseText);
-        sunset = (TextView) findViewById(R.id.sunsetText);
-        updated = (TextView) findViewById(R.id.updateText);
-        tv = (TextView) findViewById(R.id.textView2);
-        myLayout = (RelativeLayout) findViewById(R.id.activity_main);
+        ButterKnife.bind(this);
 
         String getMyCity = getIntent().getStringExtra(EXTRA_QUESTION);
         Log.e("WeatherActivity", "getMyCity: " + getMyCity);
@@ -205,7 +181,6 @@ public class WeatherCitiesActivity extends AppCompatActivity {
         protected void onPostExecute(Weather weather) {
             super.onPostExecute(weather);
 
-
             //Convert times into readable formats
             //get unix times and multiply by 1000 to get proper length since it converts down to milliseconds
             long unixSunrise = weather.place.getSunrise() * 1000;
@@ -231,7 +206,6 @@ public class WeatherCitiesActivity extends AppCompatActivity {
             sunrise.setText("Sunrise: " + sunriseTime);
             sunset.setText("Sunset: " + sunsetTime);
             updated.setText("Last Updated: " + updatedTime);
-
 
             Log.d("onPostExecute", "Cloudiness: " + weather.currentCondition.getDescription());
 
@@ -260,7 +234,7 @@ public class WeatherCitiesActivity extends AppCompatActivity {
             } else if (weather.currentCondition.getIcon().equals("03n")) {
                 myLayout.setBackgroundResource(R.drawable.nightcloud);
                 description.setText("구름 중간");
-            }else if (weather.currentCondition.getIcon().equals("03n")) {
+            }else if (weather.currentCondition.getIcon().equals("50n")) {
                 myLayout.setBackgroundResource(R.drawable.nighthaze);
                 description.setText("얇은 안개");
             }else if (weather.currentCondition.getIcon().equals("10n")) {
@@ -322,33 +296,4 @@ public class WeatherCitiesActivity extends AppCompatActivity {
         }
         return super.onOptionsItemSelected(item);
     }
-
-
-    // 사용자의 위치정보를 불러오는 함수
-    public void getAddressInfo(double latitude, double longitude) {
-        Geocoder geocoder = new Geocoder(getApplicationContext(), Locale.getDefault());
-
-        try {
-            List<Address> addressList = geocoder.getFromLocation(latitude, longitude, 1);
-
-            if (addressList != null && addressList.size() > 0) {
-                String addressResult = addressList.get(0).toString();
-
-                String labelAddressResult = "";
-                for (int i = 0; i <= addressList.get(0).getMaxAddressLineIndex(); i++) {
-                    if (i != addressList.get(0).getMaxAddressLineIndex())
-                        labelAddressResult += addressList.get(0).getAddressLine(i) + ", ";
-                    else
-                        labelAddressResult += addressList.get(0).getAddressLine(i);
-
-                }
-                tv.setText(labelAddressResult);
-                Log.d("getAddressInfo", " Address: " + labelAddressResult);
-            }
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
 }

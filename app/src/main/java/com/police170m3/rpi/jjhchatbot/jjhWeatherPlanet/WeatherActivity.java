@@ -45,22 +45,25 @@ import java.net.URL;
 import java.util.List;
 import java.util.Locale;
 
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 @SuppressWarnings("MissingPermission")
 public class WeatherActivity extends AppCompatActivity {
     public static final String CLEAR_SKY = "clear sky";
 
-    private TextView cityName;
-    private TextView temp;
-    private ImageView iconView;
-    private TextView description;
-    private TextView humidity;
-    private TextView pressure;
-    private TextView wind;
-    private TextView sunrise;
-    private TextView sunset;
-    private TextView updated;
-    private TextView tv;
-    private RelativeLayout myLayout;
+    @BindView(R.id.cityText)TextView cityName;
+    @BindView(R.id.weatherIcon)ImageView iconView;
+    @BindView(R.id.tempText)TextView temp;
+    @BindView(R.id.cloudText)TextView description;
+    @BindView(R.id.humidityText)TextView humidity;
+    @BindView(R.id.pressureText)TextView pressure;
+    @BindView(R.id.windText)TextView wind;
+    @BindView(R.id.sunriseText)TextView sunrise;
+    @BindView(R.id.sunsetText)TextView sunset;
+    @BindView(R.id.updateText)TextView updated;
+    @BindView(R.id.textView2)TextView tv;
+    @BindView(R.id.activity_main)RelativeLayout myLayout;
 
     private LocationManager locationManager;
     private LocationListener locationListener;
@@ -81,18 +84,7 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
 
-        cityName = (TextView) findViewById(R.id.cityText);
-        iconView = (ImageView) findViewById(R.id.weatherIcon);
-        temp = (TextView) findViewById(R.id.tempText);
-        description = (TextView) findViewById(R.id.cloudText);
-        humidity = (TextView) findViewById(R.id.humidityText);
-        pressure = (TextView) findViewById(R.id.pressureText);
-        wind = (TextView) findViewById(R.id.windText);
-        sunrise = (TextView) findViewById(R.id.sunriseText);
-        sunset = (TextView) findViewById(R.id.sunsetText);
-        updated = (TextView) findViewById(R.id.updateText);
-        tv = (TextView) findViewById(R.id.textView2);
-        myLayout = (RelativeLayout) findViewById(R.id.activity_main);
+        ButterKnife.bind(this);
 
         // API 23 버전이상에서 새로 업데이트 된 권한 요구 함수
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -333,7 +325,7 @@ public class WeatherActivity extends AppCompatActivity {
                 description.setText("구름 중간");
             } else if (weather.currentCondition.getIcon().equals("50n")) {
                 myLayout.setBackgroundResource(R.drawable.nighthaze);
-                description.setText("구름 중간");
+                description.setText("얇은 안개");
             }
         }
     }

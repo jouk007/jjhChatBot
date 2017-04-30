@@ -20,9 +20,9 @@ import android.net.Uri;
 import android.util.AttributeSet;
 import android.widget.ImageView;
 
-//다음 클래스는 말풍선 이미지 조정하기 위한것입니다.
-public class CircleImageView extends ImageView {
 
+public class CircleImageView extends ImageView {
+    //풍선 이미지 조정을 위한 클래스
     private static final ScaleType SCALE_TYPE = ScaleType.CENTER_CROP;
 
     private static final Bitmap.Config BITMAP_CONFIG = Bitmap.Config.ARGB_8888;

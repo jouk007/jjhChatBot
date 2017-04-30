@@ -9,4 +9,7 @@
     <item
         android:id="@+id/change_unitsId"
         android:title="@string/change_units" />
+    <item
+        android:id="@+id/set_my_word"
+        android:title="@string/setmyword" />
 </menu>

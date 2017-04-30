@@ -26,6 +26,8 @@ public final class Constants {
             "com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.BRAIN_STATUS";
     public static final String EXTRA_BRAIN_ANSWER =
             "com.police170m3.rpi.jjhchatbot.EXTRA_BRAIN_ANSWER";
+    public static final String EXTRA_TASK_ANSWER =
+            "com.police170m3.rpi.jjhchatbot.EXTRA_TASK_ANSWER";
     public static final String EXTRA_BRAIN_ANSWER_SUB =
             "com.police170m3.rpi.jjhchatbot.EXTRA_BRAIN_ANSWER_SUB";
     public static final String EXTRA_WEATHER_ANSWER =
@@ -38,5 +40,7 @@ public final class Constants {
 
     public static final String EXTENDED_LOGGER_INFO =
             "com.police170m3.rpi.jjhchatbot.LOGGER_INFO";
+    public static final String myword="myword";
+    public static final String myanswer="myanswer";
 
 }

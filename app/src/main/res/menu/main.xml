@@ -11,4 +11,7 @@
         android:title="설명"
         android:orderInCategory="100"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/set_my_word"
+        android:title="@string/setmyword" />
 </menu>

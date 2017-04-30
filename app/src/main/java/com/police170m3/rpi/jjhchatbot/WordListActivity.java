@@ -11,9 +11,6 @@ import android.widget.ListView;
 import java.util.ArrayList;
 
 public class WordListActivity extends AppCompatActivity {
-    String myWord[]={"안녕","~ 검색","~ 전화 입력해","배고파","오늘 날씨 어때","~ 날씨 알려줘","여긴 어디야","~ 근처 찾아봐","~까지 가는길 알려줘","잘지내니"
-            ,"배터리 잔량","비가 오고 있어"
-    };
     ArrayList<String> getMyImage = new ArrayList<String>();
 
     @Override
@@ -38,7 +35,7 @@ public class WordListActivity extends AppCompatActivity {
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.images_speaking),
                 "배고파", "식사에 관련된 상호 작용");
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.images_speaking),
-                "비가 오고 있어", "날씨 관련 대화");
+                "야", "간단한 상호 작용");
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.images_battery),
                 "배터리 잔량", "배터리 관련 대화");
         adapter.addItem(ContextCompat.getDrawable(this, R.drawable.images_search),

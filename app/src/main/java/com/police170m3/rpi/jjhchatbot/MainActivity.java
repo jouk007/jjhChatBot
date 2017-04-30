@@ -1,8 +1,10 @@
 package com.police170m3.rpi.jjhchatbot;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.database.Cursor;
@@ -22,25 +24,50 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ListView;
 
+import com.kosalgeek.asynctask.AsyncResponse;
+import com.kosalgeek.asynctask.EachExceptionsHandler;
+import com.kosalgeek.asynctask.PostResponseAsyncTask;
+import com.police170m3.rpi.jjhchatbot.DBSet.DBMyWordHelper;
+import com.police170m3.rpi.jjhchatbot.DBSet.DB_Word_Greeting;
 import com.police170m3.rpi.jjhchatbot.jjhTmapView.TmapDrawpassActivity;
 import com.police170m3.rpi.jjhchatbot.jjhTmapView.TmapPoiActivity;
-import com.police170m3.rpi.jjhchatbot.jjhTmapView.TmapViewActivity;
 import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.WeatherActivity;
 import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.WeatherCitiesActivity;
-import com.police170m3.rpi.jjhchatbot.jjhWeatherPlanet.WeatherService;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Locale;
 
+import butterknife.BindArray;
+import butterknife.BindString;
+import butterknife.ButterKnife;
+
 @SuppressWarnings("MissingPermission")
-public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener{
+public class MainActivity extends AppCompatActivity implements TextToSpeech.OnInitListener,AsyncResponse{
+
+    @BindString(R.string.mapSearch) String mapSearch;
+    @BindString(R.string.mapPoi)String mapPoi;
+    @BindString(R.string.search)String Search;
+    @BindString(R.string.situation_cook_yes)String situation_yes;
+    @BindString(R.string.situation_cook_no)String situation_no;
+    @BindString(R.string.weatherToday)String weatherToday;
+    @BindString(R.string.weathercity)String weatherCity;
+    @BindString(R.string.callPhone)String callPhone;
+    @BindString(R.string.situation_cook_answer)String situationWords;
+    @BindArray(R.array.search) String[] searchWords;
+    @BindArray(R.array.citiesKr)String[] WeatherKr;
+    @BindArray(R.array.citiesUs)String[] WeatherUs;
 
     public final int VOICE_RECOGNITION_REQUEST_CODE = 1234;
 
+    DB_Word_Greeting db_word_greeting = new DB_Word_Greeting(MainActivity.this);
+    private DBMyWordHelper dbMyWordHelper;
 
-    private ListView chatListView;
     private static ChatArrayAdapter adapter;
-    private EditText chatEditText;
 
     private ResponseReceiver mMessageReceiver;
     private ResponseReceiverSub mMessageReceiverSub;
@@ -48,39 +75,37 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     private Runnable mRunnable;
     private TextToSpeech mTTS;
 
+    private EditText chatEditText;
+    private ListView chatListView;
+
     String question;
     String getPhonenum;
 
-    public static String getPhoneName;
-
-    //날씨 파싱용 문자열
-    String[] citiesKr = {"서울","대구","대전","부산","광주","의정부","마산","청주","공주"
-            ,"전주","고성","속초","강릉","의성","울진","울산","구미","순천","목포","제주","인천"};
-
-    String[] citiesUs = {"Seoul","Daegu","Daejeon","Busan","Gwangju"
-            ,"Vijongbu","Masan","Cheongju","Kongju","Jeonju","Kosong","Sogcho"
-            , "Kang-neung","Eisen","Ulchin","Ulsan","Kumi","Sunchun","Moppo","Jeju","Incheon"};
-
+    ArrayList<String> chatList = new ArrayList<>();
+    ArrayList<String> SetChatList = new ArrayList<>();
+    ArrayList<String> WordLogList = new ArrayList<>();
+    // get myword from created
+    ArrayList<HashMap<String, String>> getMyWordsHash;
+    HashMap<String, String> resultp = new HashMap<String, String>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         startRepeat();
         mTTS = new TextToSpeech(this,this);
+        dbMyWordHelper = new DBMyWordHelper(getApplicationContext(), "setmyword.db",null,1);
 
         if (savedInstanceState == null) {
             Log.d("MainActivity", "onCreate savedInstanceState null");
             adapter = new ChatArrayAdapter(getApplicationContext());
-            //adapter ChatArrayAdapter 호출
-            //BrainLoggerDialog 호출
         }
+        ButterKnife.bind(this);
+        chatEditText = (EditText)findViewById(R.id.chat_editText);
+        chatListView = (ListView)findViewById(R.id.chat_listView);
 
-        chatListView = (ListView) findViewById(R.id.chat_listView);
         chatListView.setAdapter(adapter);
 
-        chatEditText = (EditText) findViewById(R.id.chat_editText);
         chatEditText.setOnKeyListener(new View.OnKeyListener() {
             public boolean onKey(View v, int keyCode, KeyEvent event) {
                 // If the event is a key-down event on the "enter" button
@@ -92,101 +117,7 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
                     mHandler = new Handler();
 
-                    if (question.contains("검색")){
-                        mRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                String grm = question.substring(0,question.indexOf("검색"));
-                                Log.e("test", "grm: "+ grm);
-                                Intent intent= new Intent(Intent.ACTION_WEB_SEARCH);
-                                intent.putExtra(SearchManager.QUERY, grm);
-                                startActivity(intent);
-                            }
-                        };
-                        mHandler = new Handler();
-                        mHandler.postDelayed(mRunnable, 1500);
-                    }else if(question.contains("배고파")){
-                        Log.e("test", "배고파:");
-                        if (question.contains("배 고프시다면 식당으로 가실래요?")){
-                            Log.e("test", "그래!");
-                        }
-                    }else if (question.contains("오늘 날씨 어때")){
-                        mRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
-                                startActivity(intent);
-                            }
-                        };
-                        mHandler = new Handler();
-                        mHandler.postDelayed(mRunnable, 1500);
-                    }else if (question.contains("날씨 알려줘")) {
-                        //Openweathermap은 한글을 지원하지않기에 한글을 입력하면 영어 문자로 변환 한뒤 파싱 해온다
-                        for (int i = 0 ; i <= citiesKr.length - 1; i++){
-                            if (question.contains(citiesKr[i])){
-                                String grm = question.replace(citiesKr[i],citiesUs[i]);
-                                Log.d("question","citiesKr:" +grm);
-                                final String grm1 = grm.substring(0,grm.length()-7);
-                                Log.d("question","citiesKr:" +grm1.length());
-
-                                mRunnable = new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        Log.d("question","citiesKr:" +grm1.length());
-                                        Intent brainIntent1 = new Intent(MainActivity.this, WeatherCitiesActivity.class);
-                                        brainIntent1.putExtra(WeatherCitiesActivity.EXTRA_QUESTION, grm1);
-                                        startActivity(brainIntent1);
-                                    }
-                                };
-                                mHandler = new Handler();
-                                mHandler.postDelayed(mRunnable, 1000);
-
-                            }
-                        }
-                    }else if (question.contains("여긴 어디야")){
-                        mRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                Intent intent = new Intent(MainActivity.this, TmapViewActivity.class);
-                                startActivity(intent);
-                            }
-                        };
-                        mHandler = new Handler();
-                        mHandler.postDelayed(mRunnable, 1500);
-                    }else if (question.contains("근처 찾아봐")){
-                        mRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                String grm = question.substring(0,question.length()-7);
-                                Log.d("question","grm1: "+grm.length());
-                                Intent brainIntent1 = new Intent(MainActivity.this, TmapPoiActivity.class);
-                                brainIntent1.putExtra(TmapPoiActivity.EXTRA_QUESTION, grm);
-                                startActivity(brainIntent1);
-                            }
-                        };
-                        mHandler = new Handler();
-                        mHandler.postDelayed(mRunnable, 1000);
-                   }else if (question.contains("까지 가는길 알려줘")){
-                        mRunnable = new Runnable() {
-                            @Override
-                            public void run() {
-                                String grm1 = question.substring(0,question.indexOf("까"));
-                                Intent brainIntent1 = new Intent(MainActivity.this, TmapDrawpassActivity.class);
-                                brainIntent1.putExtra(TmapDrawpassActivity.EXTRA_QUESTION, grm1);
-                                startActivity(brainIntent1);
-                            }
-                        };
-                        mHandler = new Handler();
-                        mHandler.postDelayed(mRunnable, 1000);
-                    }else if (question.contains("비가 오고 있어")){
-                        Intent weatherIntent = new Intent(MainActivity.this, WeatherService.class);
-                        startService(weatherIntent);
-                    }
-
-                    Intent brainIntent = new Intent(MainActivity.this, BrainService.class);
-                    brainIntent.setAction(BrainService.ACTION_QUESTION);
-                    brainIntent.putExtra(BrainService.EXTRA_QUESTION, question);
-                    startService(brainIntent);
+                    getMyDbPHP(question);
                     return true;
                 }
 
@@ -194,11 +125,102 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             }
         });
 
-
         // 키보드 셋 가림
         getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
     }
 
+    //에딧텍스트에 입력된 값을 서버에 넘기고 DB값과 일치하면 그에 맞는 답변 텍스트를 받는다
+    public void getMyDbPHP(String question){
+        String s = question;
+        chatList = db_word_greeting.setWordGreeting(s);
+
+        getMyWordsHash = dbMyWordHelper.getMyWord();
+        String getStr = chatList.get(0);
+
+        SetChatList.add(s);
+        HashMap<String,String> postData = new HashMap<String,String>();
+        postData.put("mobile","android");
+        postData.put("txtQuestion", getStr);
+
+        for (HashMap getData : getMyWordsHash) {
+            resultp = getData;
+        }
+
+        String getMyWords = resultp.get(Constants.myword);
+        String getMyAnswers = resultp.get(Constants.myanswer);
+        if (question.contains(getMyWords)){
+            //안드로이드 내부 DB에 입력된 텍스트
+            Log.d("MainActivity","getMyWordDb: "+getMyWords);
+            Intent brainIntent = new Intent(MainActivity.this, BrainService.class);
+            brainIntent.setAction(BrainService.ACTION_QUESTION);
+            brainIntent.putExtra(BrainService.EXTRA_QUESTION, getMyAnswers);
+            Log.d("MainActivity","processFinish: "+getMyAnswers);
+            startService(brainIntent);
+        }else if (question.contains(getStr)){
+            Log.d("MainActivity","question: "+question);
+            //DB 서버에 입력된 텍스트
+            PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, this);
+            task.execute("http://192.168.1.54/getchatword.php");
+            //각종 예외처리를 한번에 묶어서 표시
+            task.setEachExceptionsHandler(new EachExceptionsHandler() {
+                @Override
+                public void handleIOException(IOException e) {
+
+                }
+
+                @Override
+                public void handleMalformedURLException(MalformedURLException e) {
+
+                }
+
+                @Override
+                public void handleProtocolException(ProtocolException e) {
+
+                }
+
+                @Override
+                public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
+
+                }
+            });
+        }else {
+            //DB에 입력된 텍스트가 없을때
+            PostResponseAsyncTask task = new PostResponseAsyncTask(this, postData, this);
+            task.execute("http://192.168.1.54/getchatword.php");
+            task.setEachExceptionsHandler(new EachExceptionsHandler() {
+                @Override
+                public void handleIOException(IOException e) {
+
+                }
+
+                @Override
+                public void handleMalformedURLException(MalformedURLException e) {
+
+                }
+
+                @Override
+                public void handleProtocolException(ProtocolException e) {
+
+                }
+
+                @Override
+                public void handleUnsupportedEncodingException(UnsupportedEncodingException e) {
+
+                }
+            });
+        }
+        chatList.clear();
+    }
+
+    //받아온 답변 텍스트를 BrainService 클래스에 넘겨서 반대편 채팅창에 출력되게끔 한다
+    @Override
+    public void processFinish(String s) {
+        Intent brainIntent = new Intent(MainActivity.this, BrainService.class);
+        brainIntent.setAction(BrainService.ACTION_QUESTION);
+        brainIntent.putExtra(BrainService.EXTRA_QUESTION, s);
+        Log.d("MainActivity","processFinish: "+s);
+        startService(brainIntent);
+    }
 
     @Override
     protected void onResume() {
@@ -217,7 +239,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         mMessageReceiverSub = new ResponseReceiverSub();
         LocalBroadcastManager.getInstance(this).registerReceiver(
                 mMessageReceiverSub, intentFilter);
-
     }
 
     @Override
@@ -243,70 +264,129 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
         }else if (id == R.id.jjh_explain) {
             Intent intent = new Intent(MainActivity.this, ChabotExplainActivity.class);
             startActivity(intent);
+        }else if (id == R.id.set_my_word){
+            showSetMyWordDialog();
         }
         return super.onOptionsItemSelected(item);
     }
 
-    // Broadcast receiver for receiving status updates from the IntentService
+    // 인텐트 서비스로부터 받아온 리시버값에 따라 명령을 수행한다
     private class ResponseReceiver extends BroadcastReceiver {
 
         private ResponseReceiver() {
         }
 
-        // Called when the BroadcastReceiver gets an Intent it's registered to receive
+        // 다음 오버라이드에 받아온 값에 알맞는 명령을 수행시켜줄 코드를 입력한다
         @Override
         public void onReceive(Context context, Intent intent) {
             //답변 호출
             if (intent.getAction().equalsIgnoreCase(Constants.BROADCAST_ACTION_BRAIN_ANSWER)) {
                 String answer = intent.getStringExtra(Constants.EXTRA_BRAIN_ANSWER);
 
+                for (int i =0; i < SetChatList.size(); i++){
+                    Log.e("MainActivity", "onStartCommand() SetChatList:" + SetChatList.get(i));
+                }
+                String getAnswer = question;
+
                 Log.e("BrainService", "onStartCommand() onReceive:" + answer);
                 adapter.add(new ChatMessage(true, answer));
                 adapter.notifyDataSetChanged();
                 mTTS.speak(answer, TextToSpeech.QUEUE_FLUSH, null);
 
-                if (answer.contains("요리해서 드실려면 제가 추천해드릴 목록이 있어요")) {
-                    mRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            String grm = "추천요리";
-                            Intent intent1 = new Intent(Intent.ACTION_WEB_SEARCH);
-                            intent1.putExtra(SearchManager.QUERY, grm);
-                            startActivity(intent1);
+                // String-상호작용-배고파
+                if (answer.contains(situationWords)){
+                    WordLogList.add(situationWords);
+                }
+                if (answer.contains(situation_yes)){
+                    if (WordLogList.contains(situationWords)){
+                        String grm = getResources().getString(R.string.takecuisine);
+                        Intent intentcuisine = new Intent(Intent.ACTION_WEB_SEARCH);
+                        intentcuisine.putExtra(SearchManager.QUERY, grm);
+                        startActivity(intentcuisine);
+                        WordLogList.clear();
+                    }
+                }else if (answer.contains(situation_no)){
+                    if (WordLogList.contains(situationWords)){
+                        String grm = getResources().getString(R.string.searchcuisine);
+                        Intent intentcuisine = new Intent(MainActivity.this, TmapPoiActivity.class);
+                        intentcuisine.putExtra(TmapPoiActivity.EXTRA_QUESTION, grm);
+                        startActivity(intentcuisine);
+                        WordLogList.clear();
+                    }
+                }
+
+                // AnswerList
+                for (int i=0; i < searchWords.length; i++) {
+                    String answerList = searchWords[i];
+                    if (answer.contains(answerList)){
+                        if (getAnswer.contains(mapSearch)){
+                            // String-까지 가는길 알려줘
+                            String grm = getAnswer.substring(0,getAnswer.indexOf(mapSearch));
+                            Intent intentWay = new Intent(MainActivity.this, TmapDrawpassActivity.class);
+                            intentWay.putExtra(TmapDrawpassActivity.EXTRA_QUESTION, grm);
+                            startActivity(intentWay);
+                            Log.d("processFinish","getStr: "+grm);
                         }
-                    };
-                    mHandler = new Handler();
-                    mHandler.postDelayed(mRunnable, 1000);
-                } else if (answer.contains("그럼 주변 식당 목록을 보여드릴께요")) {
-                    mRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            //전문음식점 말고도 패스트푸드,치킨 음식 관련들은 전부다 입력시키도록한다.
-                            String grm = "전문음식점";
-                            Intent brainIntent1 = new Intent(MainActivity.this, TmapPoiActivity.class);
-                            brainIntent1.putExtra(TmapPoiActivity.EXTRA_QUESTION, grm);
-                            startActivity(brainIntent1);
+                        if (getAnswer.contains(mapPoi)){
+                            // String-근처 찾아봐
+                            String grm = getAnswer.substring(0,getAnswer.indexOf(mapPoi));
+                            Log.d("question","grm1: "+grm.length());
+                            Intent intentPoi = new Intent(MainActivity.this, TmapPoiActivity.class);
+                            intentPoi.putExtra(TmapPoiActivity.EXTRA_QUESTION, grm.trim());
+                            startActivity(intentPoi);
                         }
-                    };
-                    mHandler = new Handler();
-                    mHandler.postDelayed(mRunnable, 1000);
-                } else if (answer.contains("전화 번호 입력합니다")) {
-                    getContactList();
-                    intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + getPhonenum));
-                    Log.d("전화 걸기", "번호: " + intent);
-                    startActivity(intent);
-                } else if (answer.contains("그럼 기다려 주세요 제가 운동법을 찾아볼게요")) {
-                    mRunnable = new Runnable() {
-                        @Override
-                        public void run() {
-                            String grm = "헬스운동법";
-                            Intent intent1 = new Intent(Intent.ACTION_WEB_SEARCH);
-                            intent1.putExtra(SearchManager.QUERY, grm);
-                            startActivity(intent1);
+                        if (getAnswer.contains(Search)){
+                            // String-검색
+                            String grm = getAnswer.substring(0,getAnswer.indexOf(Search));
+                            Log.d("processFinish","getStr: "+grm);
+                            Intent intentSearch= new Intent(Intent.ACTION_WEB_SEARCH);
+                            intentSearch.putExtra(SearchManager.QUERY, grm);
+                            startActivity(intentSearch);
                         }
-                    };
-                    mHandler = new Handler();
-                    mHandler.postDelayed(mRunnable, 1000);
+                        if (getAnswer.contains(weatherToday)){
+                            //String-오늘 날씨 어때
+                            mRunnable = new Runnable() {
+                                @Override
+                                public void run() {
+                                    Intent intent = new Intent(MainActivity.this, WeatherActivity.class);
+                                    startActivity(intent);
+                                }
+                            };
+                            mHandler = new Handler();
+                            mHandler.postDelayed(mRunnable, 1500);
+                        }
+                        if (getAnswer.contains(weatherCity)){
+                            //String-날씨 알려줘
+                            for (int k = 0 ; k <= WeatherKr.length - 1; k++){
+                                if (getAnswer.contains(WeatherKr[k])){
+                                    String grm = getAnswer.replace(WeatherKr[k],WeatherUs[k]);
+                                    Log.d("question","citiesKr:" +grm);
+                                    final String grm1 = grm.substring(0,grm.indexOf(weatherCity));
+                                    Log.d("question","citiesKr:" +grm1.length());
+
+                                    mRunnable = new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            Log.d("question","citiesKr:" +grm1.length());
+                                            Intent brainIntent1 = new Intent(MainActivity.this, WeatherCitiesActivity.class);
+                                            brainIntent1.putExtra(WeatherCitiesActivity.EXTRA_QUESTION, grm1.trim());
+                                            startActivity(brainIntent1);
+                                        }
+                                    };
+                                    mHandler = new Handler();
+                                    mHandler.postDelayed(mRunnable, 1000);
+                                }
+                            }
+                        }
+                        if(getAnswer.contains(callPhone)){
+                            //String-전화 입력해
+                            String grm = getAnswer.substring(0,getAnswer.indexOf(callPhone));
+                            getContactList(grm);
+                            intent = new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + getPhonenum));
+                            startActivity(intent);
+                        }
+                    }
+                    SetChatList.clear();
                 }
             }
         }
@@ -317,7 +397,6 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
 
         private ResponseReceiverSub() {
         }
-
         // Called when the BroadcastReceiver gets an Intent it's registered to receive
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -329,12 +408,12 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
                 Log.e("BrainService", "onStartCommand() onReceive:" + answer1);
                 adapter.add(new ChatMessage(true, answer1));
                 adapter.notifyDataSetChanged();
-                mTTS.speak(answer1, TextToSpeech.QUEUE_FLUSH, null);
+                //mTTS.speak(answer1, TextToSpeech.QUEUE_FLUSH, null);
             }
         }
     }
 
-    void startRepeat(){
+    private void startRepeat(){
         // prepare the TTS to repeat chosen words
         Intent checkTTSIntent = new Intent();
         // check TTS data
@@ -355,8 +434,8 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
     }
 
     //전화부 가져오기
-    private ArrayList<Contact> getContactList() {
-        String setMyname = question.substring(0,question.length()-7);
+    private ArrayList<Contact> getContactList(String s) {
+        String setMyname = s.trim();
         Log.d("ContactsList","setMyname: "+setMyname);
 
         Uri uri = ContactsContract.CommonDataKinds.Phone.CONTENT_URI;
@@ -404,6 +483,25 @@ public class MainActivity extends AppCompatActivity implements TextToSpeech.OnIn
             } while (contactCursor.moveToNext());
         }
         return contactlist;
+    }
+
+    //옵션-말 가르치기
+    private void showSetMyWordDialog(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Teach Words");
+        final View dialogView = getLayoutInflater().inflate(R.layout.dialog_setmyword,null);
+        final EditText wordInput = (EditText)dialogView.findViewById(R.id.setwordedt);
+        final EditText answerInput = (EditText)dialogView.findViewById(R.id.setansedt);
+        builder.setView(dialogView);
+        builder.setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                String getWord = wordInput.getText().toString();
+                String getAnswer = answerInput.getText().toString();
+                dbMyWordHelper.insert(getWord,getAnswer);
+            }
+        });
+        builder.show();
     }
 
 }

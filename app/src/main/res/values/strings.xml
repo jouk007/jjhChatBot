@@ -8,6 +8,8 @@
     et accumsan et iusto odio dignissim qui blandit praesent luptatum zzril delenit augue duis dolore te feugait
     nulla facilisi.</string>
 
+    <string name="setmyword">말가르치기</string>
+
     <string name="change_city">Change City</string>
     <string name="change_units">Change Units</string>
     <string name="title_activity_weather__cities_">Weather_Cities_Activity</string>
@@ -17,4 +19,21 @@
     </string>
     <string name="explain_jjh">챗봇 어플은 저의 첫작이면서도 애착이 가는 앱입니다. 지금도 개발 중이라서 기능이 부족하지만, 향후 여러가지 기능을 덧불여서 사용자분들의 편리를 추구하고 긍정적인 평가를 받을 수 있는 개발을 하도록 노력하겠습니다. 감사합니다.</string>
 
+    <string name="takecuisine">추천요리</string>
+    <string name="searchcuisine">전문음식점</string>
+
+    <string name="mapSearch">까지 가는길 알려줘</string>
+    <string name="mapMy">여긴 어디야</string>
+    <string name="mapPoi">근처 찾아봐</string>
+    <string name="search">검색</string>
+    <string name="weatherToday">오늘 날씨 어때</string>
+    <string name="weathercity">날씨 알려줘</string>
+    <string name="situation_cook">배고파</string>
+    <string name="situation_cook_answer">배 고프시다면 식당으로 가실래요?</string>
+    <string name="situation_cook_yes">그럼 주변 식당목록을 보여드릴께요</string>
+    <string name="situation_cook_no">요리해서 드실려면 제가 추천해드릴 목록이 있어요</string>
+    <string name="yes">그래</string>
+    <string name="no">아니</string>
+    <string name="answer_what_what">어떤 책 좋아하시나요?</string>
+    <string name="callPhone">전화 입력해</string>
 </resources>
