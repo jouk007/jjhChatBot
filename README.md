@@ -7,12 +7,18 @@ Project jjh챗봇은 발전하는 인공지능 트렌드에 가장 기초적인 
 PPT링크 : https://www.slideshare.net/jungjaehun2/dzinny-ping/jungjaehun2/dzinny-ping
 
 개발역할
-프로그램 ( 이미지를 제외한 프로그램 100% )
+프로그램
+
 개발환경
+
 Apache 2.4.7
+
 php 5.5.9
+
 mysql 5.5.49
+
 xmapp
+
 android studio
 
 
