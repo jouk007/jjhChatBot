@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="citiesKr">
+        <item>서울</item>
+        <item>대구</item>
+        <item>대전</item>
+        <item>부산</item>
+        <item>광주</item>
+        <item>의정부</item>
+        <item>마산</item>
+        <item>청주</item>
+        <item>공주</item>
+        <item>전주</item>
+        <item>고성</item>
+        <item>속초</item>
+        <item>강릉</item>
+        <item>의성</item>
+        <item>울진</item>
+        <item>울산</item>
+        <item>구미</item>
+        <item>순천</item>
+        <item>목포</item>
+        <item>제주</item>
+        <item>인천</item>
+    </string-array>
+    <string-array name="citiesUs">
+        <item>Seoul</item>
+        <item>Daegu</item>
+        <item>Daejeon</item>
+        <item>Busan</item>
+        <item>Gwangju</item>
+        <item>Vijongbu</item>
+        <item>Masan</item>
+        <item>Cheongju</item>
+        <item>Kongju</item>
+        <item>Jeonju</item>
+        <item>Kosong</item>
+        <item>Sogcho</item>
+        <item>Kang-neung</item>
+        <item>Eisen</item>
+        <item>Ulchin</item>
+        <item>Ulsan</item>
+        <item>Kumi</item>
+        <item>Sunchun</item>
+        <item>Moppo</item>
+        <item>Jeju</item>
+        <item>Incheon</item>
+    </string-array>
+    <string-array name="search">
+        <item>검색을 시작합니다</item>
+        <item>찾아보도록 할께요</item>
+        <item>바로 찾아드릴께요</item>
+    </string-array>
+    <string-array name="hello">
+        <item>안녕</item>
+        <item>반가워</item>
+        <item>지니핑</item>
+        <item>잘 지냈니</item>
+    </string-array>
+    <string-array name="word_chat_words">
+        <item>야</item>
+        <item>어이</item>
+    </string-array>
+    <string-array name="word_chat_what">
+        <item>머하고있니</item>
+        <item>머하고있어</item>
+        <item>머하니</item>
+        <item>머해</item>
+    </string-array>
+    <string-array name="word_chat_question">
+        <item>을 좋아해</item>
+        <item>보고있어</item>
+        <item>에 관심있어</item>
+    </string-array>
+</resources>
